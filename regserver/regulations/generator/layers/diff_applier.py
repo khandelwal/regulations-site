@@ -15,20 +15,17 @@ class DiffApplier(object):
         self.diff = diff_json
 
     def deconstruct_text(self, original):
-        self.oq = [deque([c]) for c in original]
+        self.oq = [deque([c]) for c in original.split(' ')]
 
     def insert_text(self, pos, new_text):
-        if pos == len(self.oq):
-            self.oq[pos-1].extend(['<ins>', new_text, '</ins>'])
-        else:
-            self.oq[pos].extend(['<ins>', new_text, '</ins>'])
+        self.oq[pos-1].extend([' <ins>', new_text, '</ins>'])
 
     def delete_text(self, start, end):
         self.oq[start].appendleft('<del>')
         self.oq[end-1].append('</del>')
 
     def get_text(self):
-        return ''.join([''.join(d) for d in self.oq])
+        return ' '.join([''.join(d) for d in self.oq])
 
     def apply_diff(self, original, label):
         if label in self.diff:
@@ -39,7 +36,7 @@ class DiffApplier(object):
                 for d in text_diffs:
                     if d[0] == self.INSERT:
                         _, pos, new_text = d
-                        self.insert_text(pos, new_text + ' ')
+                        self.insert_text(pos, new_text)
                     if d[0] == self.DELETE:
                         _, s, e = d
                         self.delete_text(s, e)
@@ -54,6 +51,6 @@ class DiffApplier(object):
 
                             # Place the new text at the end of the delete for
                             # readability.
-                            self.insert_text(e-1, new_text)
+                            self.insert_text(e, new_text)
                 return self.get_text()
         return original

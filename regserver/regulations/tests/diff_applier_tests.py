@@ -14,7 +14,7 @@ class DiffApplierTest(TestCase):
     def create_diff_applier(self):
         diff = {'some': 'diff'}
         da = diff_applier.DiffApplier(diff)
-        text = "abcd"
+        text = "a b c d"
         da.deconstruct_text(text)
         return da
 
@@ -34,7 +34,7 @@ class DiffApplierTest(TestCase):
 
         da.insert_text(1, 'AA')
         deque_list = [
-            deque(['a']), deque(['b', '<ins>', 'AA', '</ins>']),
+            deque(['a', ' <ins>', 'AA', '</ins>']), deque(['b']),
             deque(['c']), deque(['d'])]
         self.assertEquals(da.oq, deque_list)
 
@@ -44,7 +44,7 @@ class DiffApplierTest(TestCase):
         da.insert_text(4, 'AA')
         deque_list = [
             deque(['a']), deque(['b']),
-            deque(['c']), deque(['d', '<ins>', 'AA', '</ins>'])]
+            deque(['c']), deque(['d', ' <ins>', 'AA', '</ins>'])]
         self.assertEquals(da.oq, deque_list)
 
     def test_delete_text(self):
@@ -56,9 +56,9 @@ class DiffApplierTest(TestCase):
         self.assertEquals(da.oq, deque_list)
 
     def test_apply_diff(self):
-        diff = {'204': {'text': [('delete', 0, 2), ('insert', 4, 'AAB')]}}
+        diff = {'204': {'text': [('delete', 0, 1), ('insert', 4, 'AAB')]}}
         da = diff_applier.DiffApplier(diff)
-        da.apply_diff('acbd', '204')
+        da.apply_diff('first second third fourth', '204')
 
         new_text = da.get_text()
-        self.assertEquals('<del>ac</del>bd<ins>AAB </ins>', new_text)
+        self.assertEquals('<del>first</del> second third fourth <ins>AAB</ins>', new_text)
