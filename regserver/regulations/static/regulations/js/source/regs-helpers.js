@@ -102,9 +102,38 @@ define('regs-helpers', function() {
         //
         // **TODO** RegsData.getParent is the same?
         findBaseSection: function(id) {
-            var parts = id.split('-');
+            if (id.indexOf('-') !== -1) {
+                var parts = id.split('-');
 
-            return parts[0] + '-' + parts[1];
+                return parts[0] + '-' + parts[1];
+            }
+            else {
+                return id;
+            }
+        },
+
+        findURLPrefix: function() {
+            var i, pathLen, sitePath,
+                url = [];
+
+            sitePath = document.location.pathname.split('/');
+            pathLen = sitePath.length;
+
+            for (i=0; i<=pathLen; i++) {
+                if (sitePath[i] === 'regulation') {
+                    break;
+                }
+                else if (sitePath[i] !== '') {
+                    url.push(sitePath[i]);
+                }
+            }
+
+            if (url.length === 0) {
+                return false;
+            }
+            else {
+                return url = _.compact(url).join('/');
+            }
         }
     };
 });

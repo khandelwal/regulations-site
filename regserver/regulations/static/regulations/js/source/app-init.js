@@ -3,7 +3,7 @@
 // **TODO**: Consolidate/minimize module dependencies
 //
 // **Usage**: require(['app-init'], function(app) { $(document).ready(function() { app.init(); }) })
-define(['jquery', 'underscore', 'backbone', 'content-view', 'regs-data', 'definition-view', 'sub-head-view', 'toc-view', 'regs-dispatch', 'sidebar-view', 'konami', 'header-view', 'analytics-handler'], function($, _, Backbone, ContentView, RegsData, DefinitionView, SubHeadView, TOCView, Dispatch, SidebarView, Konami, HeaderView, AnalyticsHandler) {
+define(['jquery', 'underscore', 'backbone', 'content-view', 'regs-data', 'definition-view', 'sub-head-view', 'toc-view', 'regs-dispatch', 'sidebar-view', 'konami', 'header-view', 'analytics-handler', 'regs-helpers'], function($, _, Backbone, ContentView, RegsData, DefinitionView, SubHeadView, TOCView, Dispatch, SidebarView, Konami, HeaderView, AnalyticsHandler, RegsHelpers) {
     'use strict';
     return {
         // Temporary method. Recurses DOM and builds front end representation of content.
@@ -62,7 +62,10 @@ define(['jquery', 'underscore', 'backbone', 'content-view', 'regs-data', 'defini
         },
 
         init: function() {
-            this.getTree($('#reg-content')); 
+            var openSection,
+                urlPrefix,
+                regVersion,
+                regSection = $('.main-content .reg-section');
 
             // init primary Views that require only a single instance
             window.Regs = {};
@@ -72,6 +75,22 @@ define(['jquery', 'underscore', 'backbone', 'content-view', 'regs-data', 'defini
             window.Regs.regContent = new ContentView();
             window.Regs.analytics = new AnalyticsHandler();
             window.Regs.mainHeader = new HeaderView();
+
+            // set open section and version for ajax calls
+            openSection = regSection.attr('id');
+            Dispatch.set('section', openSection);
+
+            regVersion = regSection.data('base-version');
+            Dispatch.set('version', regVersion);
+
+            // cache open section content
+            RegsData.set(openSection, regSection.html());
+
+            // cache URL prefix
+            urlPrefix = RegsHelpers.findURLPrefix();
+            if (urlPrefix) {
+                Dispatch.set('urlprefix', urlPrefix);
+            }
 
             this.bindEvents();
             this.fetchModelForms();

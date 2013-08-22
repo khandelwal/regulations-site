@@ -1,5 +1,6 @@
-import re
 from regulations.generator import generator
+from regulations.generator import node_types
+from regulations.generator.title_parsing import appendix_supplement, section
 
 
 def get_labels(current):
@@ -46,12 +47,11 @@ def nav_sections(current, version):
                 return (previous_section, next_section)
 
 
-def section_title(data):
-    sect_number = '.'.join(data['index'])
-    sect_text = re.search(sect_number + r'[^\w]*(.*)', data['title']).group(1)
+def parse_section_title(data):
+    """ Separate the section number from the section title (this works for
+    both appendix and section text. """
 
-    element = {
-        'section': '-'.join(data['index']),
-        'title': (sect_number, sect_text)
-    }
-    return element
+    if node_types.is_appendix(data['index']):
+        return appendix_supplement(data)
+    else:
+        return section(data)

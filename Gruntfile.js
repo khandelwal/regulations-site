@@ -22,7 +22,7 @@ module.exports = function(grunt) {
     less: {
         development: {
             options: {
-                paths: ['<%= env.frontEndPath %>/css/less', '<%= env.frontEndPath %>/css/less/module'],
+                paths: ['<%= env.frontEndPath %>/css/less', '<%= env.frontEndPath %>/css/less/module', '<%= env.frontEndPath %>/css/less/media-queries', '<%= env.frontEndPath %>/css/less/media-queries/breakpoints'],
                 yuicompress: true
             },
             files: {
@@ -128,7 +128,8 @@ module.exports = function(grunt) {
                 'content-view': './views/content-view',
                 'konami': './lib/konami',
                 'analytics-handler': './views/analytics-handler-view',
-                'header-view': './views/header-view'
+                'header-view': './views/header-view',
+                'section-footer-view': './views/section-footer-view'
               },
               shim: {
                 underscore: {
@@ -171,7 +172,7 @@ module.exports = function(grunt) {
      */
     watch: {
       gruntfile: {
-        files: ['Gruntfile.js', '<%= env.frontEndPath %>/css/less/*.less', '<%= env.frontEndPath %>/css/less/module/*.less'],
+        files: ['Gruntfile.js', '<%= env.frontEndPath %>/css/less/*.less', '<%= env.frontEndPath %>/css/less/module/*.less', '<%= env.frontEndPath %>/css/less/media-queries/breakpoints*.less'],
         tasks: ['less']
       }
     },
@@ -220,7 +221,8 @@ module.exports = function(grunt) {
                     'content-view': './views/content-view',
                     'konami': './lib/konami',
                     'analytics-handler': './views/analytics-handler-view',
-                    'header-view': './views/header-view'
+                    'header-view': './views/header-view',
+                    'section-footer-view': './views/section-footer-view'
                 },
                 shim: {
                     underscore: {
