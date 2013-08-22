@@ -61,4 +61,5 @@ class DiffApplierTest(TestCase):
         da.apply_diff('first second third fourth', '204')
 
         new_text = da.get_text()
-        self.assertEquals('<del>first</del> second third fourth <ins>AAB</ins>', new_text)
+        self.assertEquals(
+            '<del>first</del> second third fourth <ins>AAB</ins>', new_text)
