@@ -11,6 +11,8 @@ class DiffApplier(object):
     INSERT = u'insert'
     DELETE = u'delete'
 
+    DELETED_OP = 'deleted'
+
     def __init__(self, diff_json):
         self.diff = diff_json
 
@@ -30,9 +32,30 @@ class DiffApplier(object):
     def get_text(self):
         return ''.join([''.join(d) for d in self.oq])
 
+    def delete_all(self, text):
+        """ Mark all the text passed in as deleted. """
+        return '<del>' + text + '</del>'
+
+    def tree_changes(self, tree):
+        """ This handles the added of whole new paragraphs. """
+
+        #Walk the tree once
+        tree_hash = {}
+        root_label = tree['label_id']
+        tree_hash[root_label] = tree
+
+        for c in tree['children']:
+            tree_hash[c['label_id']] = c
+
+        #new_nodes = [label for label in self.diff if self.diff[label]['op'] == 'added' and self.diff[label].starts_with(root)]
+
+
+
     def apply_diff(self, original, label):
         if label in self.diff:
-            if 'text' in self.diff[label]:
+            if self.diff[label]['op'] == self.DELETED_OP:
+                return self.delete_all(original)
+            elif 'text' in self.diff[label]:
                 text_diffs = self.diff[label]['text']
                 self.deconstruct_text(original)
 
@@ -45,13 +68,11 @@ class DiffApplier(object):
                         self.delete_text(s, e)
                     if isinstance(d[0], types.ListType):
                         if d[0][0] == self.DELETE and d[1][0] == self.INSERT:
-
                             # Text replace scenario.
                             _, s, e = d[0]
                             self.delete_text(s, e)
 
                             _, _, new_text = d[1]
-
                             # Place the new text at the end of the delete for
                             # readability.
                             self.insert_text(e-1, new_text)

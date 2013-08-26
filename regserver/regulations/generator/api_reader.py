@@ -76,7 +76,12 @@ class Client:
         if not params:
             params = {}
         if self.base_url.startswith('http'):    # API
-            return requests.get(self.base_url + suffix, params=params).json()
+            r = requests.get(self.base_url + suffix, params=params)
+            if r:
+                return r.json()
+            else:
+                return None
+            #return requests.get(self.base_url + suffix, params=params).json()
         else:   # file system
             if os.path.isdir(self.base_url + suffix):
                 suffix = suffix + "/index.html"

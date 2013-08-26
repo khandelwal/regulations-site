@@ -26,7 +26,8 @@ class PartialSectionDiffView(TemplateView):
         appliers = utils.handle_specified_layers('', label_id, older)
 
         reg = label_id.split('-')[0]
-        appliers += (generator.get_diff_applier(reg, older, newer),)
+        diff_applier = generator.get_diff_applier(reg, older, newer)
+        appliers += (diff_applier,)
 
         builder = HTMLBuilder(*appliers)
         builder.tree = tree

@@ -29,6 +29,7 @@ class HTMLBuilder():
 
     def generate_html(self):
         self.process_node(self.tree)
+        self.diff_applier.tree_changes(self.tree)
 
     def parse_doc_title(self, reg_title):
         match = re.search(r"[(].+[)]$", reg_title)
