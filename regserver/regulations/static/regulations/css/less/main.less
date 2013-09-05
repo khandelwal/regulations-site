@@ -25,6 +25,7 @@ Modules
 @import url(module/footer.less);
 @import url(module/sidebar.less);
 @import url(module/permalink.less);
+@import url(module/sxs.less);
 
 /*
 Media Queries
@@ -51,8 +52,24 @@ Media Queries
     margin: 0;
 }
 
-.hidden {
-    display: none;
+.js {
+    .hidden {
+        display: none;
+    }
+}
+
+.icon-text {
+    text-indent: -9999px;
+}
+
+.loading {
+    -moz-opacity: 0.3;
+    opacity: 0.3;
+
+    * {
+        -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=30)"; /* IE 8 */
+        filter: alpha(opacity=30); /* IE 6 & 7 */
+    }
 }
 
 .important {

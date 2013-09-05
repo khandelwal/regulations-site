@@ -1,44 +1,41 @@
+/*
+Sidebar.less
+========================================================================== 
+sidebar.less styles all of the right sidebar content
+*/
+
+/* 
+add a margin to sidebar content
+this offsets the persistent header & ensures long content is inside the viewport
+*/
+.sidebar-inner {
+    margin-bottom: 120px;
+}
+
+/* IE8 requires both the margin and padding to offset the header*/
+.lt-ie9 {
+    .secondary-content {
+        padding-bottom: 140px;
+    }
+}
+
+/*
+Sidebar
+=======
+*/
 .secondary-content {
+    overflow-y: auto;
     font-size: .875em;
 
+    /* reset the margin and padding of all sidebar lists*/
     ul,
     li {
         .reset;
     }
-
-    .chunk {
-        margin: 1em 0 0 0;
-
-        a:link,
-        a:visited {
-            color: @pacific;
-            text-decoration: none;
-            border: none;
-        }
-
-        a:hover,
-        a:active {
-            border-bottom: 1px solid;
-        }
-
-        &.hidden {
-            margin: 0;
-        }
-
-    }
-
-    .sub-text {
-        margin-top: 0 0 15px 0; 
-        padding: 0 0 15px 0;
-        .border-bottom-light(@width: 1px);
-    }
-
-    .effective,
-    .notice {
-        .avenir-next;
-    }
-
-    h5 {
+/* 
+Headers within the sidebar should be <h4>
+*/
+    h4 {
         font-size: 0.857142857em;
         margin: 0;
         text-transform: uppercase;
@@ -47,7 +44,6 @@
         .avenir-next-demi;
 
         &.expandable {
-            margin: 1.5em 15px 1.5em 0;
             cursor: pointer;
         }
 
@@ -55,109 +51,53 @@
             color: @red_orange;
         }
 
-        &.expandable:after {
-            content: "";
-            width: 16px;
-            height: 16px;
-            background: url(../img/open_close.png) 0px 3px no-repeat;
-            float: right;
+        &.has-content {
+            background-color: @light_orange;
         }
 
+        &.expandable:after {
+            .minicon;
+            content: "\e003";
+            color: @pacific;
+            width: 16px;
+            line-height: 19px;
+            float: right;
 
-        @media 
-        (-webkit-min-device-pixel-ratio: 2), 
-        (min-resolution: 192dpi) {
-            &.expandable:after {
-                background: url(../img/open_close@2x.png) 0px 3px no-repeat;
-                background-size: 13px;
-            }
         }
 
         &.open:after {
-            content: "";
+            .minicon;
+            content: "\e004";
+            color: @pacific;
             width: 16px;
-            height: 16px;
-            background: url(../img/open_close.png) 0px -14px no-repeat;
+            line-height: 19px;
             float: right; 
         }
-
-        @media 
-        (-webkit-min-device-pixel-ratio: 2), 
-        (min-resolution: 192dpi) {
-            &.open:after {
-                background: url(../img/open_close@2x.png) 0px -14px no-repeat ;
-                background-size: 13px;
-            }
-        }
-    }
-
-    h6 {
-        font-size: 1em;
-        margin: 16px 0 0 0;
-    }
-
-    h6:first-child {
-        margin: 0;
-    }
-
-}
-
-.open-definition ol,
-.active-term {
-    .avenir-next-demi;
-}
-
-.open-definition p {
-    font-family: @body-font;
-    font-weight: normal;
-}
-
-.open-definition {
-    .close-button {
-        position: absolute;
-        left: -10000px;
-        cursor: pointer;
-
-        &:active,
-        &:focus {
-            position: relative;
-            left: 0;
-        }
     }
 }
 
-/* continue links */
-.continue-link {
-    .avenir-next-demi;
-    display: inline-block;
-    margin: 0 15px 0 0;
-}
-
-.continue-link:last-child {
-    margin-bottom: 100px;
-}
-
+/*
+Sidebar Headers
+===============
+*/
 .sidebar-header {
-    margin: 0 10px 0 15px;
-    height: 20px;
-    width: 100%;
     .group;
+    background-color: @bg_gray;
 
-    h2 {
-        font-size: .875em;
-        float: left;
-        text-transform: uppercase;
-        .avenir-next;
-        width: 60%;
+    h4 {
         color: @dark_gray;
+        padding: .5em 1em;
+        .avenir-next;
+        text-transform: uppercase;
     }
 
     .close-button {
-        margin: .8em -4px 0 0; /*negative right padding accomodates extra space in image file */
+        margin-top: .2em;
         text-indent: -9999px;
         background: url(../img/close.png) no-repeat 0 0;
         cursor: pointer;
         z-index: 99999;
+        width: 13px;
         float: right;
     }
 
@@ -166,7 +106,118 @@
     (min-resolution: 192dpi) {
         .close-button {
             background: url(../img/close@2x.png) no-repeat 0 0;
-            background-size: 15px 15px;
+            background-size: 13px 13px;
         }
     }
+}
+
+/*
+Regs Meta
+===============
+Regs Meta contains the sub-content meta data found in the sidebar
+*/
+
+.regs-meta {
+    h4 {
+        background-color: @bg_gray;
+        color: @dark_gray;
+        padding: .5em 1em;
+        .avenir-next;
+    }
+
+    .chunk {
+        padding: 1em;
+        .border-bottom-light;
+
+        li a:link {
+            display: block;
+            .avenir-next-demi;
+            color: @black;
+            .border-bottom-light;
+            padding: .5em;
+            text-decoration: none;
+
+            .minicon-right {
+                float: right;
+                font-size: 0.875em;
+                line-height: 2;
+                color: @dark_gray;
+            }
+
+            &:hover, &:active {
+                text-decoration: none;
+                color: @pacific;
+
+                .minicon-right {
+                    color: @pacific;
+                }
+            }
+        }
+
+        li:last-child a:link {
+            border: none;
+        }
+    }
+}
+
+/*
+Definitions
+===========
+When open definitions appear in the right sidebar
+*/
+
+.open-definition ol,
+.active-term {
+    .avenir-next-demi;
+}
+
+.open-definition {
+    .close-button {
+        cursor: pointer;
+
+        &:active,
+        &:focus {
+            position: relative;
+            left: 0;
+        }
+
+        &.tab-activated {
+            position: absolute;
+            left: -10000px;
+        }
+    }
+
+    p {
+        font-family: @body-font;
+        font-weight: normal;
+    }
+
+    & > p {
+        clear: left;
+    }
+
+    .definition-text {
+        padding: 1em;
+        border-bottom: 1px solid @medium_gray;
+
+        p {
+            margin-top: 0;
+        }
+    }
+}
+
+.js .expand-drawer {
+    display: none;
+}
+
+/* 
+continue links */
+.continue-link {
+    .avenir-next-demi;
+    display: inline-block;
+    margin: 0 15px 0 0;
+}
+
+.continue-link:last-child {
+    margin-bottom: 100px;
 }

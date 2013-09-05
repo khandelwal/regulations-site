@@ -54,7 +54,7 @@ class LayerCreator(object):
             'paragraph': ParagraphLayersApplier(),
             'search_replace': SearchReplaceLayersApplier()}
 
-        self.api = api_reader.Client(settings.API_BASE)
+        self.api = api_reader.ApiReader()
 
     def get_layer_json(self, api_name, regulation, version):
         """ Hit the API to retrieve the regulation JSON. """
@@ -94,23 +94,25 @@ class LayerCreator(object):
 def get_regulation(regulation, version):
     """ Get the regulation JSON tree. Manipulate the label a bit for easier
     access in the templates."""
-    api = api_reader.Client(settings.API_BASE)
+    api = api_reader.ApiReader()
     reg = api.regulation(regulation, version)
-    title = reg['title']
-    # up till the paren
-    match = re.search('part \d+[^\w]*([^\(]*)', title, re.I)
-    if match:
-        reg['title_clean'] = match.group(1).strip()
-    match = re.search('\(regulation (\w+)\)', title, re.I)
-    if match:
-        reg['reg_letter'] = match.group(1)
 
-    return reg
+    if reg:
+        title = reg['title']
+        # up till the paren
+        match = re.search('part \d+[^\w]*([^\(]*)', title, re.I)
+        if match:
+            reg['title_clean'] = match.group(1).strip()
+        match = re.search('\(regulation (\w+)\)', title, re.I)
+        if match:
+            reg['reg_letter'] = match.group(1)
+
+        return reg
 
 
 def get_tree_paragraph(paragraph_id, version):
     """Get a single level of the regulation tree."""
-    api = api_reader.Client(settings.API_BASE)
+    api = api_reader.ApiReader()
     return api.regulation(paragraph_id, version)
 
 
@@ -122,15 +124,34 @@ def get_builder(regulation, version, inline_applier, p_applier, s_applier):
 
 
 def get_all_notices():
-    api = api_reader.Client(settings.API_BASE)
+    api = api_reader.ApiReader()
     return notices.fetch_all(api)
 
 
+def get_notice(document_number):
+    """ Get a the data from a particular notice, given the Federal Register
+    document number. """
+
+    api = api_reader.ApiReader()
+    return api.notice(document_number)
+
+
+def get_sxs(label_id, notice):
+    """ Given a paragraph label_id, find the sxs analysis for that paragraph if
+    it exists and has content. """
+
+    all_sxs = notice['section_by_section']
+    relevant_sxs = notices.find_label_in_sxs(all_sxs, label_id)
+
+    return relevant_sxs
+
+
 def get_diff_json(regulation, older, newer):
-    api = api_reader.Client(settings.API_BASE)
+    api = api_reader.ApiReader()
     return api.diff(regulation, older, newer)
 
 
 def get_diff_applier(regulation, older, newer):
     diff_json = get_diff_json(regulation, older, newer)
-    return DiffApplier(diff_json)
+    if diff_json:
+        return DiffApplier(diff_json)

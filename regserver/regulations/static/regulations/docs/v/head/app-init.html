@@ -29,13 +29,23 @@
               </a>
             
               
-              <a class="source" href="regs-data.html">
-                regs-data.js
+              <a class="source" href="dispatch.html">
+                dispatch.js
               </a>
             
               
-              <a class="source" href="regs-dispatch.html">
-                regs-dispatch.js
+              <a class="source" href="folder-model.html">
+                folder-model.js
+              </a>
+            
+              
+              <a class="source" href="meta-model.html">
+                meta-model.js
+              </a>
+            
+              
+              <a class="source" href="reg-model.html">
+                reg-model.js
               </a>
             
               
@@ -59,6 +69,11 @@
               </a>
             
               
+              <a class="source" href="sxs-model.html">
+                sxs-model.js
+              </a>
+            
+              
               <a class="source" href="analytics-handler-view.html">
                 analytics-handler-view.js
               </a>
@@ -74,13 +89,23 @@
               </a>
             
               
+              <a class="source" href="drawer-view.html">
+                drawer-view.js
+              </a>
+            
+              
               <a class="source" href="header-view.html">
                 header-view.js
               </a>
             
               
-              <a class="source" href="regs-view.html">
-                regs-view.js
+              <a class="source" href="history-view.html">
+                history-view.js
+              </a>
+            
+              
+              <a class="source" href="search-view.html">
+                search-view.js
               </a>
             
               
@@ -94,6 +119,16 @@
               </a>
             
               
+              <a class="source" href="sidebar-list-view.html">
+                sidebar-list-view.js
+              </a>
+            
+              
+              <a class="source" href="sidebar-module-view.html">
+                sidebar-module-view.js
+              </a>
+            
+              
               <a class="source" href="sidebar-view.html">
                 sidebar-view.js
               </a>
@@ -101,6 +136,16 @@
               
               <a class="source" href="sub-head-view.html">
                 sub-head-view.js
+              </a>
+            
+              
+              <a class="source" href="sxs-list-view.html">
+                sxs-list-view.js
+              </a>
+            
+              
+              <a class="source" href="sxs-view.html">
+                sxs-view.js
               </a>
             
               
@@ -134,7 +179,7 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>define([<span class="string">'jquery'</span>, <span class="string">'underscore'</span>, <span class="string">'backbone'</span>, <span class="string">'content-view'</span>, <span class="string">'regs-data'</span>, <span class="string">'definition-view'</span>, <span class="string">'sub-head-view'</span>, <span class="string">'toc-view'</span>, <span class="string">'regs-dispatch'</span>, <span class="string">'sidebar-view'</span>, <span class="string">'konami'</span>, <span class="string">'header-view'</span>, <span class="string">'analytics-handler'</span>, <span class="string">'regs-helpers'</span>], <span class="keyword">function</span>($, _, Backbone, ContentView, RegsData, DefinitionView, SubHeadView, TOCView, Dispatch, SidebarView, Konami, HeaderView, AnalyticsHandler, RegsHelpers) {
+            <div class="content"><div class='highlight'><pre>define([<span class="string">'jquery'</span>, <span class="string">'underscore'</span>, <span class="string">'backbone'</span>, <span class="string">'content-view'</span>, <span class="string">'reg-model'</span>, <span class="string">'definition-view'</span>, <span class="string">'sub-head-view'</span>, <span class="string">'drawer-view'</span>, <span class="string">'dispatch'</span>, <span class="string">'sidebar-view'</span>, <span class="string">'konami'</span>, <span class="string">'header-view'</span>, <span class="string">'analytics-handler'</span>, <span class="string">'regs-helpers'</span>, <span class="string">'./regs-router'</span>], <span class="keyword">function</span>($, _, Backbone, ContentView, RegModel, DefinitionView, SubHeadView, DrawerView, Dispatch, SidebarView, Konami, HeaderView, AnalyticsHandler, RegsHelpers, Router) {
     <span class="string">'use strict'</span>;
     <span class="keyword">return</span> {</pre></div></div>
             
@@ -160,7 +205,7 @@ API should make this obsolete.</p>
                     clist = $child.find(<span class="string">'ol'</span>),
                     $nextChild;
 
-                RegsData.set({
+                RegModel.set({
                     <span class="string">'text'</span>: cid,
                     <span class="string">'content'</span>: $child.html()
                 }); 
@@ -196,7 +241,13 @@ API should make this obsolete.</p>
                 $(<span class="string">'#about-tool'</span>).html(<span class="string">'Made with &lt;span style="color: red"&gt;&lt;3&lt;/span&gt; by:'</span>);
                 $(<span class="string">'#about-reg'</span>).html(<span class="string">'Find our brilliant attorneys at:'</span>);
             });
-        },</pre></div></div>
+        },
+
+        init: <span class="keyword">function</span>() {
+            <span class="keyword">var</span> openSection,
+                urlPrefix,
+                regVersion,
+                regSection = $(<span class="string">'.main-content section[data-base-version]'</span>);</pre></div></div>
             
         </li>
         
@@ -207,33 +258,15 @@ API should make this obsolete.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-4">&#182;</a>
               </div>
-              <p>as of sprint 6, model form images are giant and block at load
-incrementally loads in images once rendering is complete</p>
+              <p>set open section and version for ajax calls</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>        fetchModelForms: <span class="keyword">function</span>() {
-            <span class="keyword">var</span> insertImg = <span class="keyword">function</span>(tag) {
-                <span class="keyword">var</span> $tag = $(tag),
-                    url = $tag.data(<span class="string">'imgUrl'</span>),
-                    alt = $tag.data(<span class="string">'imgAlt'</span>);
+            <div class="content"><div class='highlight'><pre>            openSection = regSection.attr(<span class="string">'id'</span>);
+            Dispatch.set(<span class="string">'section'</span>, openSection);
 
-                <span class="keyword">if</span> (url) {
-                    $tag.parent().append(<span class="string">'&lt;img class="reg-image" src="'</span> + url + <span class="string">'" alt="'</span> + alt + <span class="string">'" /&gt;'</span>);
-                }
-            };
-
-            $(<span class="string">'noscript'</span>).each(<span class="keyword">function</span>() {
-                <span class="keyword">var</span> tag = <span class="keyword">this</span>;
-                setTimeout(<span class="keyword">function</span>() { insertImg(tag); }, <span class="number">2000</span>, tag);
-            });
-        },
-
-        init: <span class="keyword">function</span>() {
-            <span class="keyword">var</span> openSection,
-                urlPrefix,
-                regVersion,
-                regSection = $(<span class="string">'.main-content .reg-section'</span>);</pre></div></div>
+            regVersion = regSection.data(<span class="string">'base-version'</span>);
+            Dispatch.set(<span class="string">'version'</span>, regVersion);</pre></div></div>
             
         </li>
         
@@ -250,7 +283,7 @@ incrementally loads in images once rendering is complete</p>
             
             <div class="content"><div class='highlight'><pre>            window.Regs = {};
             window.Regs.subhead = <span class="keyword">new</span> SubHeadView();
-            window.Regs.toc = <span class="keyword">new</span> TOCView();
+            window.Regs.drawer = <span class="keyword">new</span> DrawerView();
             window.Regs.sidebar = <span class="keyword">new</span> SidebarView();
             window.Regs.regContent = <span class="keyword">new</span> ContentView();
             window.Regs.analytics = <span class="keyword">new</span> AnalyticsHandler();
@@ -265,15 +298,15 @@ incrementally loads in images once rendering is complete</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-6">&#182;</a>
               </div>
-              <p>set open section and version for ajax calls</p>
+              <p>cache URL prefix</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>            openSection = regSection.attr(<span class="string">'id'</span>);
-            Dispatch.set(<span class="string">'section'</span>, openSection);
-
-            regVersion = regSection.data(<span class="string">'base-version'</span>);
-            Dispatch.set(<span class="string">'version'</span>, regVersion);</pre></div></div>
+            <div class="content"><div class='highlight'><pre>            urlPrefix = RegsHelpers.findURLPrefix();
+            <span class="keyword">if</span> (urlPrefix) {
+                Dispatch.set(<span class="string">'urlprefix'</span>, urlPrefix);
+            }
+            Router.start();</pre></div></div>
             
         </li>
         
@@ -288,28 +321,9 @@ incrementally loads in images once rendering is complete</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>            RegsData.set(openSection, regSection.html());</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-8">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-8">&#182;</a>
-              </div>
-              <p>cache URL prefix</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>            urlPrefix = RegsHelpers.findURLPrefix();
-            <span class="keyword">if</span> (urlPrefix) {
-                Dispatch.set(<span class="string">'urlprefix'</span>, urlPrefix);
-            }
+            <div class="content"><div class='highlight'><pre>            RegModel.set(openSection, regSection.html());
 
             <span class="keyword">this</span>.bindEvents();
-            <span class="keyword">this</span>.fetchModelForms();
         }
     };
 });</pre></div></div>

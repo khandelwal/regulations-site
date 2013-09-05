@@ -116,12 +116,13 @@ module.exports = function(grunt) {
                 jquery: './lib/jquery-1.9.1',
                 samplejson: '../tests/grunt/js/fixtures/sample-json',
                 'jquery-scrollstop': './lib/jquery.scrollstop',
+                'jquery-cookie': './lib/jquery.cookie',
                 'jquery-hoverIntent': './lib/jquery.hoverIntent',
                 'definition-view': './views/definition-view',
                 'interpretation-view': './views/interpretation-view',
                 'regs-fixed-el-view': './views/regs-fixed-el-view',
                 'sub-head-view': './views/sub-head-view',
-                'regs-view': './views/regs-view',
+                'sidebar-module-view': './views/sidebar-module-view',
                 'toc-view': './views/toc-view',
                 'sidebar-view': './views/sidebar-view',
                 'sidebar-head-view': './views/sidebar-head-view',
@@ -129,7 +130,13 @@ module.exports = function(grunt) {
                 'konami': './lib/konami',
                 'analytics-handler': './views/analytics-handler-view',
                 'header-view': './views/header-view',
-                'section-footer-view': './views/section-footer-view'
+                'section-footer-view': './views/section-footer-view',
+                'drawer-view': './views/drawer-view',
+                'history-view': './views/history-view',
+                'search-view': './views/search-view',
+                'sxs-list-view': './views/sxs-list-view',
+                'sidebar-list-view': './views/sidebar-list-view',
+                'sxs-view': './views/sxs-view'
               },
               shim: {
                 underscore: {
@@ -172,7 +179,7 @@ module.exports = function(grunt) {
      */
     watch: {
       gruntfile: {
-        files: ['Gruntfile.js', '<%= env.frontEndPath %>/css/less/*.less', '<%= env.frontEndPath %>/css/less/module/*.less', '<%= env.frontEndPath %>/css/less/media-queries/breakpoints*.less'],
+        files: ['Gruntfile.js', '<%= env.frontEndPath %>/css/less/*.less', '<%= env.frontEndPath %>/css/less/module/*.less', '<%= env.frontEndPath %>/css/less/media-queries/breakpoints/*.less'],
         tasks: ['less']
       }
     },
@@ -210,11 +217,12 @@ module.exports = function(grunt) {
                     underscore: './lib/underscore',
                     backbone: './lib/backbone',
                     'jquery-scrollstop': './lib/jquery.scrollstop',
+                    'jquery-cookie': './lib/jquery.cookie',
                     'definition-view': './views/definition-view',
                     'interpretation-view': './views/interpretation-view',
                     'regs-fixed-el-view': './views/regs-fixed-el-view',
                     'sub-head-view': './views/sub-head-view',
-                    'regs-view': './views/regs-view',
+                    'sidebar-module-view': './views/sidebar-module-view',
                     'toc-view': './views/toc-view',
                     'sidebar-view': './views/sidebar-view',
                     'sidebar-head-view': './views/sidebar-head-view',
@@ -222,7 +230,13 @@ module.exports = function(grunt) {
                     'konami': './lib/konami',
                     'analytics-handler': './views/analytics-handler-view',
                     'header-view': './views/header-view',
-                    'section-footer-view': './views/section-footer-view'
+                    'section-footer-view': './views/section-footer-view',
+                    'drawer-view': './views/drawer-view',
+                    'history-view': './views/history-view',
+                    'search-view': './views/search-view',
+                    'sxs-list-view': './views/sxs-list-view',
+                    'sidebar-list-view': './views/sidebar-list-view',
+                    'sxs-view': './views/sxs-view'
                 },
                 shim: {
                     underscore: {

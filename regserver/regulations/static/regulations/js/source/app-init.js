@@ -3,7 +3,7 @@
 // **TODO**: Consolidate/minimize module dependencies
 //
 // **Usage**: require(['app-init'], function(app) { $(document).ready(function() { app.init(); }) })
-define(['jquery', 'underscore', 'backbone', 'content-view', 'regs-data', 'definition-view', 'sub-head-view', 'toc-view', 'regs-dispatch', 'sidebar-view', 'konami', 'header-view', 'analytics-handler', 'regs-helpers'], function($, _, Backbone, ContentView, RegsData, DefinitionView, SubHeadView, TOCView, Dispatch, SidebarView, Konami, HeaderView, AnalyticsHandler, RegsHelpers) {
+define(['jquery', 'underscore', 'backbone', 'content-view', 'reg-model', 'definition-view', 'sub-head-view', 'drawer-view', 'dispatch', 'sidebar-view', 'konami', 'header-view', 'analytics-handler', 'regs-helpers', './regs-router'], function($, _, Backbone, ContentView, RegModel, DefinitionView, SubHeadView, DrawerView, Dispatch, SidebarView, Konami, HeaderView, AnalyticsHandler, RegsHelpers, Router) {
     'use strict';
     return {
         // Temporary method. Recurses DOM and builds front end representation of content.
@@ -16,7 +16,7 @@ define(['jquery', 'underscore', 'backbone', 'content-view', 'regs-data', 'defini
                     clist = $child.find('ol'),
                     $nextChild;
 
-                RegsData.set({
+                RegModel.set({
                     'text': cid,
                     'content': $child.html()
                 }); 
@@ -42,39 +42,11 @@ define(['jquery', 'underscore', 'backbone', 'content-view', 'regs-data', 'defini
             });
         },
 
-        // as of sprint 6, model form images are giant and block at load
-        // incrementally loads in images once rendering is complete
-        fetchModelForms: function() {
-            var insertImg = function(tag) {
-                var $tag = $(tag),
-                    url = $tag.data('imgUrl'),
-                    alt = $tag.data('imgAlt');
-
-                if (url) {
-                    $tag.parent().append('<img class="reg-image" src="' + url + '" alt="' + alt + '" />');
-                }
-            };
-
-            $('noscript').each(function() {
-                var tag = this;
-                setTimeout(function() { insertImg(tag); }, 2000, tag);
-            });
-        },
-
         init: function() {
             var openSection,
                 urlPrefix,
                 regVersion,
-                regSection = $('.main-content .reg-section');
-
-            // init primary Views that require only a single instance
-            window.Regs = {};
-            window.Regs.subhead = new SubHeadView();
-            window.Regs.toc = new TOCView();
-            window.Regs.sidebar = new SidebarView();
-            window.Regs.regContent = new ContentView();
-            window.Regs.analytics = new AnalyticsHandler();
-            window.Regs.mainHeader = new HeaderView();
+                regSection = $('.main-content section[data-base-version]');
 
             // set open section and version for ajax calls
             openSection = regSection.attr('id');
@@ -83,17 +55,26 @@ define(['jquery', 'underscore', 'backbone', 'content-view', 'regs-data', 'defini
             regVersion = regSection.data('base-version');
             Dispatch.set('version', regVersion);
 
-            // cache open section content
-            RegsData.set(openSection, regSection.html());
+            // init primary Views that require only a single instance
+            window.Regs = {};
+            window.Regs.subhead = new SubHeadView();
+            window.Regs.drawer = new DrawerView();
+            window.Regs.sidebar = new SidebarView();
+            window.Regs.regContent = new ContentView();
+            window.Regs.analytics = new AnalyticsHandler();
+            window.Regs.mainHeader = new HeaderView();
 
             // cache URL prefix
             urlPrefix = RegsHelpers.findURLPrefix();
             if (urlPrefix) {
                 Dispatch.set('urlprefix', urlPrefix);
             }
+            Router.start();
+
+            // cache open section content
+            RegModel.set(openSection, regSection.html());
 
             this.bindEvents();
-            this.fetchModelForms();
         }
     };
 });

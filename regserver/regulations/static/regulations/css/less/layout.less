@@ -36,10 +36,6 @@ Main Content
     margin-left: 15px;
 }
 
-.sidebar-inner {
-    padding: 15px 15px 120px 15px;
-}
-
 /*TODO: convert TOC drawer width to em*/
 .panel {
     position: fixed;
@@ -48,7 +44,6 @@ Main Content
     width: 17.142857143em; /*240px */
     padding-bottom: 60px;
     z-index: 999999;
-    overflow-y: scroll;
 }
 
 /*
@@ -75,7 +70,7 @@ TOC Header Navigation
     left: 0;
     width: 15em; /*240px;*/
     height: 34px;
-    border-right: 2px solid #d0d0ce;
+    border-right: 2px solid @medium_gray;
     .border-bottom-medium(@width: 1px);
     background-color: #f6f6f5;
 }

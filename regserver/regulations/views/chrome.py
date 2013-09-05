@@ -1,10 +1,12 @@
 from django.conf import settings
+from django.http import Http404
 from django.views.generic.base import TemplateView
 
 from regulations.generator import generator
 from regulations.generator.versions import fetch_grouped_history
 from regulations.views import utils
 from regulations.views.partial import *
+from regulations.views.sidebar import SideBarView
 
 
 class ChromeView(TemplateView):
@@ -29,11 +31,20 @@ class ChromeView(TemplateView):
         full_tree = generator.get_regulation(part, version)
         relevant_tree = generator.get_tree_paragraph(label_id, version)
 
+        if full_tree is None or relevant_tree is None:
+            raise Http404
+
         partial_view = self.partial_class.as_view()
         response = partial_view(
             self.request, label_id=label_id, version=version)
         response.render()
         context['partial_content'] = response.content
+
+        sidebar_view = SideBarView.as_view()
+        response = sidebar_view(self.request, label_id=label_id,
+                                version=version)
+        response.render()
+        context['sidebar_content'] = response.content
 
         appliers = utils.handle_specified_layers(
             'toc,meta', part, version, self.partial_class.sectional_links)

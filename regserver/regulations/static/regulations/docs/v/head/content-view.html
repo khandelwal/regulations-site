@@ -29,13 +29,23 @@
               </a>
             
               
-              <a class="source" href="regs-data.html">
-                regs-data.js
+              <a class="source" href="dispatch.html">
+                dispatch.js
               </a>
             
               
-              <a class="source" href="regs-dispatch.html">
-                regs-dispatch.js
+              <a class="source" href="folder-model.html">
+                folder-model.js
+              </a>
+            
+              
+              <a class="source" href="meta-model.html">
+                meta-model.js
+              </a>
+            
+              
+              <a class="source" href="reg-model.html">
+                reg-model.js
               </a>
             
               
@@ -59,6 +69,11 @@
               </a>
             
               
+              <a class="source" href="sxs-model.html">
+                sxs-model.js
+              </a>
+            
+              
               <a class="source" href="analytics-handler-view.html">
                 analytics-handler-view.js
               </a>
@@ -74,13 +89,23 @@
               </a>
             
               
+              <a class="source" href="drawer-view.html">
+                drawer-view.js
+              </a>
+            
+              
               <a class="source" href="header-view.html">
                 header-view.js
               </a>
             
               
-              <a class="source" href="regs-view.html">
-                regs-view.js
+              <a class="source" href="history-view.html">
+                history-view.js
+              </a>
+            
+              
+              <a class="source" href="search-view.html">
+                search-view.js
               </a>
             
               
@@ -94,6 +119,16 @@
               </a>
             
               
+              <a class="source" href="sidebar-list-view.html">
+                sidebar-list-view.js
+              </a>
+            
+              
+              <a class="source" href="sidebar-module-view.html">
+                sidebar-module-view.js
+              </a>
+            
+              
               <a class="source" href="sidebar-view.html">
                 sidebar-view.js
               </a>
@@ -101,6 +136,16 @@
               
               <a class="source" href="sub-head-view.html">
                 sub-head-view.js
+              </a>
+            
+              
+              <a class="source" href="sxs-list-view.html">
+                sxs-list-view.js
+              </a>
+            
+              
+              <a class="source" href="sxs-view.html">
+                sxs-view.js
               </a>
             
               
@@ -134,7 +179,7 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>define(<span class="string">'content-view'</span>, [<span class="string">'jquery'</span>, <span class="string">'underscore'</span>, <span class="string">'backbone'</span>, <span class="string">'jquery-scrollstop'</span>, <span class="string">'regs-dispatch'</span>, <span class="string">'definition-view'</span>, <span class="string">'sub-head-view'</span>, <span class="string">'regs-data'</span>, <span class="string">'section-footer-view'</span>, <span class="string">'regs-router'</span>], <span class="keyword">function</span>($, _, Backbone, jQScroll, Dispatch, DefinitionView, SubHeadView, RegsData, SectionFooterView, Router) {
+            <div class="content"><div class='highlight'><pre>define(<span class="string">'content-view'</span>, [<span class="string">'jquery'</span>, <span class="string">'underscore'</span>, <span class="string">'backbone'</span>, <span class="string">'jquery-scrollstop'</span>, <span class="string">'dispatch'</span>, <span class="string">'definition-view'</span>, <span class="string">'sub-head-view'</span>, <span class="string">'reg-model'</span>, <span class="string">'section-footer-view'</span>, <span class="string">'regs-router'</span>], <span class="keyword">function</span>($, _, Backbone, jQScroll, Dispatch, DefinitionView, SubHeadView, RegModel, SectionFooterView, Router) {
     <span class="string">'use strict'</span>;
 
     <span class="keyword">var</span> ContentView = Backbone.View.extend({
@@ -303,9 +348,7 @@ re-render view</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>        loadSection: <span class="keyword">function</span>(sectionId) {
-            <span class="keyword">var</span> returned = RegsData.get(sectionId);
-
-            <span class="keyword">if</span> (<span class="keyword">typeof</span> returned.done !== <span class="string">'undefined'</span>) {</pre></div></div>
+            <span class="keyword">var</span> returned = RegModel.get(sectionId);</pre></div></div>
             
         </li>
         
@@ -315,6 +358,23 @@ re-render view</p>
               
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>visually indicate that a new section is loading</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            $(<span class="string">'.reg-text'</span>).addClass(<span class="string">'loading'</span>);
+
+            <span class="keyword">if</span> (<span class="keyword">typeof</span> returned.done !== <span class="string">'undefined'</span>) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
               </div>
               <p>@TODO: error handling</p>
 
@@ -330,20 +390,14 @@ re-render view</p>
         },
 
         openSection: <span class="keyword">function</span>(section, sectionId) {
-            <span class="keyword">var</span> urlPrefix = Dispatch.getURLPrefix();
+            Dispatch.set(<span class="string">'section'</span>, sectionId);
 
             <span class="keyword">this</span>.$el.html(section);
             window.scrollTo(<span class="number">0</span>, <span class="number">0</span>);
             Dispatch.trigger(<span class="string">'section:open'</span>, sectionId);
-            Dispatch.set(<span class="string">'section'</span>, sectionId);
 
             Dispatch.set(<span class="string">'sectionNav'</span>, <span class="keyword">new</span> SectionFooterView({el: <span class="keyword">this</span>.$el.find(<span class="string">'.section-nav'</span>)}));
-            <span class="keyword">if</span> (urlPrefix) {
-                Router.navigate(<span class="string">'/'</span> + urlPrefix + <span class="string">'/regulation/'</span> + sectionId + <span class="string">'/'</span> + Dispatch.getVersion());
-            }
-            <span class="keyword">else</span> {
-                Router.navigate(<span class="string">'/regulation/'</span> + sectionId + <span class="string">'/'</span> + Dispatch.getVersion());
-            }
+            Router.navigate(<span class="string">'regulation/'</span> + sectionId + <span class="string">'/'</span> + Dispatch.getVersion());
 
             <span class="keyword">this</span>.updateWayfinding();
         },
@@ -354,11 +408,11 @@ re-render view</p>
         </li>
         
         
-        <li id="section-11">
+        <li id="section-12">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-11">&#182;</a>
+                <a class="pilcrow" href="#section-12">&#182;</a>
               </div>
               <p>cache all sections in the DOM eligible to be the active section
 also cache some jQobjs that we will refer to frequently</p>
@@ -370,11 +424,11 @@ also cache some jQobjs that we will refer to frequently</p>
         </li>
         
         
-        <li id="section-12">
+        <li id="section-13">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-12">&#182;</a>
+                <a class="pilcrow" href="#section-13">&#182;</a>
               </div>
               <p>sections that are eligible for being the active section</p>
 
@@ -385,11 +439,11 @@ also cache some jQobjs that we will refer to frequently</p>
         </li>
         
         
-        <li id="section-13">
+        <li id="section-14">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-13">&#182;</a>
+                <a class="pilcrow" href="#section-14">&#182;</a>
               </div>
               <p>cache jQobjs of each reg section</p>
 
@@ -404,11 +458,11 @@ also cache some jQobjs that we will refer to frequently</p>
         </li>
         
         
-        <li id="section-14">
+        <li id="section-15">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-14">&#182;</a>
+                <a class="pilcrow" href="#section-15">&#182;</a>
               </div>
               <p>for a consistent API</p>
 
@@ -421,11 +475,11 @@ also cache some jQobjs that we will refer to frequently</p>
         </li>
         
         
-        <li id="section-15">
+        <li id="section-16">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-15">&#182;</a>
+                <a class="pilcrow" href="#section-16">&#182;</a>
               </div>
               <p>only concerned with resetting DOM, no matter
 what way the definition was closed</p>
@@ -439,11 +493,11 @@ what way the definition was closed</p>
         </li>
         
         
-        <li id="section-16">
+        <li id="section-17">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-16">&#182;</a>
+                <a class="pilcrow" href="#section-17">&#182;</a>
               </div>
               <p>only concerned with sending GA event if the definition
 is closed via active term link</p>
@@ -466,11 +520,11 @@ is closed via active term link</p>
         </li>
         
         
-        <li id="section-17">
+        <li id="section-18">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-17">&#182;</a>
+                <a class="pilcrow" href="#section-18">&#182;</a>
               </div>
               <p>content section key term link click handler</p>
 
@@ -478,26 +532,9 @@ is closed via active term link</p>
             
             <div class="content"><div class='highlight'><pre>        termLinkHandler: <span class="keyword">function</span>(e) {
             e.preventDefault();
+
             <span class="keyword">var</span> $link = $(e.target),
                 defId = $link.attr(<span class="string">'data-definition'</span>);</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-18">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-18">&#182;</a>
-              </div>
-              <p>if this link is already active, toggle def shut</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>            <span class="keyword">if</span> ($link.data(<span class="string">'active'</span>)) {
-                Dispatch.remove(<span class="string">'definition'</span>);
-            }
-            <span class="keyword">else</span> {</pre></div></div>
             
         </li>
         
@@ -507,6 +544,25 @@ is closed via active term link</p>
               
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-19">&#182;</a>
+              </div>
+              <p>if this link is already active, toggle def shut</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            <span class="keyword">if</span> ($link.data(<span class="string">'active'</span>)) {
+                Dispatch.remove(<span class="string">'definition'</span>);
+                <span class="keyword">this</span>.clearActiveTerms();
+            }
+            <span class="keyword">else</span> {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-20">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-20">&#182;</a>
               </div>
               <p>if its the same definition, diff term link</p>
 
@@ -520,11 +576,11 @@ is closed via active term link</p>
         </li>
         
         
-        <li id="section-20">
+        <li id="section-21">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-20">&#182;</a>
+                <a class="pilcrow" href="#section-21">&#182;</a>
               </div>
               <p>close old definition, if there is one</p>
 
@@ -535,11 +591,11 @@ is closed via active term link</p>
         </li>
         
         
-        <li id="section-21">
+        <li id="section-22">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-21">&#182;</a>
+                <a class="pilcrow" href="#section-22">&#182;</a>
               </div>
               <p>open new definition</p>
 
@@ -559,6 +615,7 @@ is closed via active term link</p>
             });
 
             Dispatch.set(<span class="string">'definition'</span>, definition);
+            Dispatch.trigger(<span class="string">'definition:open'</span>);
             Dispatch.trigger(<span class="string">'ga-event:definition'</span>, {
                 action: <span class="string">'clicked key term to open definition'</span>,
                 context: defId
@@ -571,11 +628,11 @@ is closed via active term link</p>
         </li>
         
         
-        <li id="section-22">
+        <li id="section-23">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-22">&#182;</a>
+                <a class="pilcrow" href="#section-23">&#182;</a>
               </div>
               <p>handler for when inline interpretation is clicked</p>
 
@@ -586,11 +643,11 @@ is closed via active term link</p>
         </li>
         
         
-        <li id="section-23">
+        <li id="section-24">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-23">&#182;</a>
+                <a class="pilcrow" href="#section-24">&#182;</a>
               </div>
               <p>user can click anywhere in the header of a closed interp
 for an open interp, they can click &quot;hide&quot; button or header</p>
@@ -604,7 +661,7 @@ for an open interp, they can click &quot;hide&quot; button or header</p>
 
             section.toggleClass(<span class="string">'open'</span>);
             header.next(<span class="string">'.hidden'</span>).slideToggle();
-            button.html(section.hasClass(<span class="string">'open'</span>) ? <span class="string">'Hide'</span> : <span class="string">'Show'</span>);
+            button.toggleClass(<span class="string">'open'</span>).html(section.hasClass(<span class="string">'open'</span>) ? <span class="string">'Hide'</span> : <span class="string">'Show'</span>);
 
             <span class="keyword">return</span> <span class="keyword">this</span>;
         },</pre></div></div>
@@ -612,11 +669,11 @@ for an open interp, they can click &quot;hide&quot; button or header</p>
         </li>
         
         
-        <li id="section-24">
+        <li id="section-25">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-24">&#182;</a>
+                <a class="pilcrow" href="#section-25">&#182;</a>
               </div>
               <p>handler for when a permalink icon should be shown</p>
 
@@ -640,11 +697,11 @@ for an open interp, they can click &quot;hide&quot; button or header</p>
         </li>
         
         
-        <li id="section-25">
+        <li id="section-26">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-25">&#182;</a>
+                <a class="pilcrow" href="#section-26">&#182;</a>
               </div>
               <p>send GA event when permalink is clicked</p>
 
@@ -661,11 +718,11 @@ for an open interp, they can click &quot;hide&quot; button or header</p>
         </li>
         
         
-        <li id="section-26">
+        <li id="section-27">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-26">&#182;</a>
+                <a class="pilcrow" href="#section-27">&#182;</a>
               </div>
               <p>Sets DOM back to neutral state</p>
 

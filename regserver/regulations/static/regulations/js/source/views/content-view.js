@@ -3,7 +3,7 @@
 // **Jurisdiction** .main-content
 //
 // **Usage** ```require(['content-view'], function(ContentView) {})```
-define('content-view', ['jquery', 'underscore', 'backbone', 'jquery-scrollstop', 'regs-dispatch', 'definition-view', 'sub-head-view', 'regs-data', 'section-footer-view', 'regs-router'], function($, _, Backbone, jQScroll, Dispatch, DefinitionView, SubHeadView, RegsData, SectionFooterView, Router) {
+define('content-view', ['jquery', 'underscore', 'backbone', 'jquery-scrollstop', 'dispatch', 'definition-view', 'sub-head-view', 'reg-model', 'section-footer-view', 'regs-router'], function($, _, Backbone, jQScroll, Dispatch, DefinitionView, SubHeadView, RegModel, SectionFooterView, Router) {
     'use strict';
 
     var ContentView = Backbone.View.extend({
@@ -70,7 +70,10 @@ define('content-view', ['jquery', 'underscore', 'backbone', 'jquery-scrollstop',
         // ask for section data, when promise is completed,
         // re-render view
         loadSection: function(sectionId) {
-            var returned = RegsData.get(sectionId);
+            var returned = RegModel.get(sectionId);
+
+            // visually indicate that a new section is loading
+            $('.reg-text').addClass('loading');
 
             if (typeof returned.done !== 'undefined') {
                 // @TODO: error handling
@@ -84,20 +87,14 @@ define('content-view', ['jquery', 'underscore', 'backbone', 'jquery-scrollstop',
         },
 
         openSection: function(section, sectionId) {
-            var urlPrefix = Dispatch.getURLPrefix();
+            Dispatch.set('section', sectionId);
 
             this.$el.html(section);
             window.scrollTo(0, 0);
             Dispatch.trigger('section:open', sectionId);
-            Dispatch.set('section', sectionId);
 
             Dispatch.set('sectionNav', new SectionFooterView({el: this.$el.find('.section-nav')}));
-            if (urlPrefix) {
-                Router.navigate('/' + urlPrefix + '/regulation/' + sectionId + '/' + Dispatch.getVersion());
-            }
-            else {
-                Router.navigate('/regulation/' + sectionId + '/' + Dispatch.getVersion());
-            }
+            Router.navigate('regulation/' + sectionId + '/' + Dispatch.getVersion());
 
             this.updateWayfinding();
         },
@@ -148,12 +145,14 @@ define('content-view', ['jquery', 'underscore', 'backbone', 'jquery-scrollstop',
         // content section key term link click handler
         termLinkHandler: function(e) {
             e.preventDefault();
+
             var $link = $(e.target),
                 defId = $link.attr('data-definition');
 
             // if this link is already active, toggle def shut
             if ($link.data('active')) {
                 Dispatch.remove('definition');
+                this.clearActiveTerms();
             }
             else {
                 // if its the same definition, diff term link
@@ -178,6 +177,7 @@ define('content-view', ['jquery', 'underscore', 'backbone', 'jquery-scrollstop',
             });
 
             Dispatch.set('definition', definition);
+            Dispatch.trigger('definition:open');
             Dispatch.trigger('ga-event:definition', {
                 action: 'clicked key term to open definition',
                 context: defId
@@ -199,7 +199,7 @@ define('content-view', ['jquery', 'underscore', 'backbone', 'jquery-scrollstop',
 
             section.toggleClass('open');
             header.next('.hidden').slideToggle();
-            button.html(section.hasClass('open') ? 'Hide' : 'Show');
+            button.toggleClass('open').html(section.hasClass('open') ? 'Hide' : 'Show');
 
             return this;
         },

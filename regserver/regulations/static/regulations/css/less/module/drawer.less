@@ -17,11 +17,12 @@ Generic drawer styles
 --------------------- */
 
 .panel {
-    background-color: #f6f6f5;
-    border-right: 2px solid #d0d0ce;
+    background-color: @bg_gray;
+    border-right: 2px solid @medium_gray;
     .avenir-next-demi;
     font-size: .875em;
-    .slide; /* animate the panel opening */
+    .slide (@direction: left, @speed: 300ms); /* animate the panel opening */
+    overflow-y: scroll; /* allow content to be scrollable */
 }
 
 /*
@@ -34,18 +35,20 @@ When applied at large resolutions displays, the active class causes the panel na
 @media only screen and ( min-width: 1100px ) {
     .panel.active{
         left: -200px;
+        top: 200px;
 
         /* slide content fully offscreen*/
-        ol, 
+        ol,
+        ul, 
         h2 {
             position: absolute;
-            left: -320px;    
+            left: -999px;    
         }
 }
 
 /* animate the .toc-head */
 .toc-head {
-    .slide;
+    .slide (@direction: left, @speed: 300ms);
 
     a:hover,
     a:active {
@@ -56,6 +59,7 @@ When applied at large resolutions displays, the active class causes the panel na
     .active .toc-head {
         left: -200px;
         margin-right: 15px;
+        height: 150px; /* extra height for TOC toggle buttons */
     }
 }
 
@@ -77,14 +81,14 @@ Panel Header
 .drawer-header {
     width: 17.142857143em;
     position: fixed;
-    background-color: #f6f6f5;
-    border-right: 2px solid #d0d0ce;
+    background-color: @bg_gray;
+    border-right: 2px solid @medium_gray;
 
     h2 {
         margin: 0;
         padding: 10px 15px 14px 15px;
         line-height: 1.2;
-        .border-bottom-light (@width: 2px);
+        .border-bottom-medium (@width: 2px);
 
         .toc-type {
             color: @dark_gray;
@@ -111,7 +115,7 @@ Panel Header
 }
 
 .toc-container {
-    margin-top: 120px;
+    margin-top: 126px; /* put drawer content below persistent header*/
 }
 
 /* 
@@ -164,13 +168,18 @@ TOC Nav Links
 .toc-nav-links toggle between the types of drawer content
 currently these are TOC, History, and Search
 */
+
+.drawer-toggles li {
+    display: inline-block;
+}
+
 .toc-nav-link {
     text-indent: -9999px;
     display: inline-block;
-    margin-left: -0.25em; /*accomodate inline-block spacing */
+    margin-left: -4px;; /*accomodate inline-block spacing */
     height: 34px; /* match height of main header */
     width: 56px;
-    border-right: 1px solid @light_field;
+    border-right: 1px solid @medium_gray;
 }
 
 .drawer-toggles li:first-child {
@@ -212,6 +221,12 @@ currently these are TOC, History, and Search
     }
 }
 
+/* 
+* right now we need to declare the bg-color for each id
+* due to the way the icons are used as background images
+* use of the icon font will change this
+*/
+
 #menu-link:hover,
 #menu-link:active,
 #history-link:hover,
@@ -221,6 +236,33 @@ currently these are TOC, History, and Search
         background-color: @light_field;
 }
 
+#menu-link,
+#history-link,
+#search-link {
+    &.current {
+        background-color: @light_field;
+    }
+}
+
+@media only screen and ( min-width: 1100px ) {
+    .active .toc-nav-link {
+        border-right: none;
+    }
+
+    .active .drawer-toggles {
+        position: absolute;
+        top: 34px;
+        right: 0px;
+    }
+
+     .active .drawer-toggles li {
+        display: list-item;
+    }
+
+    .active .toc-nav-link {
+        width: 40px;
+    }
+}
 
 /* 
 Table of Contents Drawer
@@ -258,7 +300,7 @@ This contains all of the styles specific to the TOC
     }
 
     a:hover,
-    a:active,
+    a:active
     li .current {
         color: @black;
         background-color: @green_light;
@@ -274,40 +316,55 @@ This contains all of the styles specific to the history
 
 #history {
 
-    .avenir-next;
+    .avenir-next-demi;
 
     ul, 
     li {
         .reset;
     }
 
+    /*.status-list {
+        
+    }*/
+
+    /*TODO: unify link styles with TOC*/
+
     .status-list {
-        padding: 10px 15px;
         border-bottom: 1px solid @light_field;
     }
 
-    a:link,
-    a:visited {
-        color: @pacific;
+    .version-link {
+        display: block;
+        margin: 0;
+        padding: 10px 15px;
+        width: 100%;
+        height: 100%;
+    }
+
+    .version-link:link,
+    .version-link:visited {
+        color: @black;
         text-decoration: none;
     }
 
-    a:hover,
-    a:active {
-        text-decoration: underline;
+    .version-link:hover,
+    .version-link:active,
+    .version-link:target,
+    .current {
+        color: @black;
+        background-color: @green_light;
     }
 
     h3 {
-        margin: 6px 0;
+        margin: 0;
         font-size: 1em;
         .avenir-next-demi;
     }
 
     h4 {
         .reset;
-        font-size: 0.875em;
+        font-size: 0.75em;
         text-transform: uppercase;
-        .avenir-next-demi;
         color: @dark_text;
     }
 
@@ -319,20 +376,34 @@ This contains all of the styles specific to the history
         float: right;
     }
 
-    .rule-list li {
-        margin: .5em 0;
-        font-size: 0.875em;
+    .rule-list {
+        margin: 0 15px;
+        .avenir-next;
     }
 
-    .fr-notice:after {
-        .minicon;
-        font-size: 0.875em;
-        content: " \e007";
+    .rule-list li {
+        margin: .5em 0;
     }
+
 }
+.js {
+   .rule-list {
+    display: none;
+   } 
+
+   .current .rule-list {
+    display: block;
+   }
+}
+
 
 /* 
 Search Drawer
 =============
 This contains all of the styles specific to the search
 */
+
+#search {
+    padding: 0 15px;
+}
+

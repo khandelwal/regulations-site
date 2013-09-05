@@ -27,6 +27,8 @@ mixins.less contains any mixins or variables to be used throughout the LESS file
 @bg_gray: #F2F2F2; /* background header */
 @medium_gray: #BABBBD; /* light border */
 @dark_text: #75787B;
+@orange: #FBCD92;
+@light_orange: #FFECD1;
 
 /* 
  Type Variables/Mixins
@@ -83,13 +85,13 @@ mixins.less contains any mixins or variables to be used throughout the LESS file
  -----------
 */
 
-.slide {
+.slide (@direction: left, @speed: 300ms) {
     transform: translate3d(0,0,0);
-    -webkit-transition: left 300ms ease; 
-       -moz-transition: left 300ms ease; 
-        -ms-transition: left 300ms ease; 
-         -o-transition: left 300ms ease; 
-            transition: left 300ms ease;
+    -webkit-transition: @direction @speed ease; 
+       -moz-transition: @direction @speed ease; 
+        -ms-transition: @direction @speed ease; 
+         -o-transition: @direction @speed ease; 
+            transition: @direction @speed ease;
 }
 
  /*
