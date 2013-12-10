@@ -1,3 +1,7 @@
+{% comment %}
+    This handles subparts in the Table of Contents. 
+{% endcomment %}
+
 <li><a href="" data-section-id="{{item.section_id}}">{{item.label|safe|upper}} - {{item.sub_label|safe}} </a></li>
 
 {% if item.sub_toc %}
